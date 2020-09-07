@@ -42,11 +42,11 @@ do
           -t "TITLE=$title" -t "tracknumber=$tracknumber"
       # Sanitize filenames
       saveto="$musicdir/${artist//\/ /}/${album//\/ /}"
-      echo "Saved song $title by $artist to $saveto/${title//\/ /}.ogg"
+      echo "Saved song $title by $artist to $saveto/$(printf "%02d" ${tracknumber}) - ${title//\/ /}.ogg"
       if [[ ! -a $saveto ]]; then
         mkdir -p "$saveto"
       fi
-      mv tmp.ogg "$saveto/${title//\/ /}.ogg"
+      mv tmp.ogg "$saveto/$(printf "%02d" ${tracknumber}) - ${title//\/ /}.ogg"
       if [[ -s cover.jpg ]] && [[ ! -a "$saveto/cover.jpg" ]]; then
         mv cover.jpg "$saveto/cover.jpg"
       fi
@@ -74,16 +74,18 @@ do
       album="$string"
       echo "Album = $string"
     elif [[ $variant == "url" ]]; then
-      # Get the track number
+      # Get the track number and cover-art from the spotify page
+      wget -q -O tmp.html $string
+      # Echo out track number
       tracknumber=$(grep -o -P '.{0,0}track_number.{0,7}' tmp.html | cut -d: -f2 | cut -d, -f1)
-      echo "Track number = $tracknumber"
       # Fetch the covert-art
-      string=$(grep -o -P '.{0,0}background-image:url.{0,200}' tmp.html | cut -d"(" -f2 | cut -d")" -f1)
+      url=$(grep -o -P '.{0,0}background-image:url.{0,200}' tmp.html | cut -d"(" -f2 | cut -d")" -f1)
       to_replace="//"
       empty=""
-      string=${string/$to_replace/$empty}
-      echo $string
-      wget -q -O cover.jpg "$string"
+      url=${url/$to_replace/$empty}
+      wget -q -O cover.jpg $url
+      rm -f tmp.html
+      echo "Track number = $tracknumber"
     fi
   fi
 done
