@@ -75,7 +75,7 @@ do
       echo "Album = $string"
     elif [[ $variant == "url" ]]; then
       # Get the track number and download the coverart using an outside script
-      tracknumber=$(`$script_dir/trackify.sh` "$string")
+      tracknumber=$(grep -o -P '.{0,0}track_number.{0,7}' tmp.html | cut -d: -f2 | cut -d, -f1)
       echo "Track number = $tracknumber"
     fi
   fi
