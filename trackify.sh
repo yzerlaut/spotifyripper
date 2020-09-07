@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TN=$(grep -o -P '.{0,0}track_number.{0,7}' tmp.html | cut -d: -f2 | cut -d, -f1)
+TN=$(grep -o -P '.{0,0}background-image:url(.{0,200}' tmp.html | cut -d: -f2 | cut -d, -f1)
 echo $TN  
 
 # string=$(echo "$1" | cut -d: -f3)

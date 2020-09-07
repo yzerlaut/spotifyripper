@@ -74,9 +74,10 @@ do
       album="$string"
       echo "Album = $string"
     elif [[ $variant == "url" ]]; then
-      # Get the track number and download the coverart using an outside script
+      # Get the track number
       tracknumber=$(grep -o -P '.{0,0}track_number.{0,7}' tmp.html | cut -d: -f2 | cut -d, -f1)
       echo "Track number = $tracknumber"
+      # Fetch the covert-art
     fi
   fi
 done
